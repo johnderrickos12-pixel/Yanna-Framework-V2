@@ -1,0 +1,16 @@
+
+{
+  "name": "c2-server",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "server": "npm run dev --workspace=packages/server",
+    "client": "npm run dev --workspace=packages/client",
+    "dev": "npm run server & npm run client"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
