@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum BotStatus {
+  ONLINE
+  OFFLINE
+  BUSY
+}
+
+model Bot {
+  id           String    @id @default(cuid())
+  ipAddress    String
+  os           String?
+  version      String?
+  country      String?
+  status       BotStatus @default(OFFLINE)
+  lastSeen     DateTime  @default(now())
+  tasks        Task[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+enum TaskStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum AttackType {
+  UDP_FLOOD
+  TCP_SYN_FLOOD
+  HTTP_GET
+  HTTP_POST
+  SLOWLORIS
+}
+
+model Task {
+  id           Int        @id @default(autoincrement())
+  bots         Bot[]
+  attackType   AttackType
+  target       String     // e.g., "1.2.3.4:80" or "https://example.com"
+  duration     Int        // in seconds
+  status       TaskStatus @default(PENDING)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
